@@ -8,7 +8,7 @@ ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/do
 
 # Install php extensions
 RUN chmod +x /usr/local/bin/install-php-extensions && sync && \
-    install-php-extensions mbstring pdo_mysql zip exif pcntl gd memcached
+    install-php-extensions mbstring pdo_mysql zip exif pcntl gd memcached pdo_pgsql redis 
 
 # Install dependencies
 RUN apt-get update && apt-get install -y \
@@ -56,9 +56,7 @@ RUN cp docker/nginx.conf /etc/nginx/sites-enabled/default
 RUN chown -R www:www /etc/nginx/sites-enabled/default
 RUN chown -R www:www /etc/supervisord.conf
 RUN chown -R www:www /usr/local/etc/php/conf.d/app.ini
-RUN chown -R www:www /var/log
-RUN chown -R www:www /var/www
-RUN chown -R www:www /var/run
+RUN chown -R www:www /var/
 RUN chown -R www:www /run/
 
 # PHP Error Log Files
@@ -77,6 +75,8 @@ RUN composer config --no-plugins allow-plugins.kylekatarnls/update-helper false
 RUN composer update -vvv
 RUN composer install --optimize-autoloader --no-dev --no-scripts
 RUN chmod +x /var/www/docker/run.sh
+RUN php artisan migrate
+RUN php artisan db:seed
 
 EXPOSE 80
 ENTRYPOINT ["/var/www/docker/run.sh"]
