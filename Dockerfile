@@ -25,8 +25,7 @@ RUN apt-get update && apt-get install -y \
     lua-zlib-dev \
     libmemcached-dev \
     nginx \
-    wget \
-    apache2 
+    wget 
 
 # Install supervisor
 RUN apt-get install -y supervisor
@@ -75,8 +74,8 @@ RUN composer config --no-plugins allow-plugins.kylekatarnls/update-helper false
 RUN composer update -vvv
 RUN composer install --optimize-autoloader --no-dev --no-scripts
 RUN chmod +x /var/www/docker/run.sh
-RUN php artisan migrate
-RUN php artisan db:seed
+# RUN php artisan migrate
+# RUN php artisan db:seed
 
 EXPOSE 80
 ENTRYPOINT ["/var/www/docker/run.sh"]
